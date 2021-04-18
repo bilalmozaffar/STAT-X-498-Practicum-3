@@ -1,0 +1,17 @@
+---
+title: "Practicum-3-group-2"
+author: "Nijia Ke, "
+date: "4/18/2021"
+output: pdf_document
+---
+
+```{r warning=FALSE, message=FALSE}
+otter = read.csv("otter2.csv", header = TRUE)
+library(imputeTS)
+#impute the missing values for Altitude and store the values after imputation in a new variable called imp_Altitude
+otter$imp_Altitude = c(na_kalman(otter$Altitude[1:20]), na_kalman(otter$Altitude[21:40]), na_kalman(otter$Altitude[41:60]), na_kalman(otter$Altitude[61:80]), na_kalman(otter$Altitude[81:100]))
+#impute the missing values for Trout and store the values after imputation in a new variable called imp_Trout
+otter$imp_Trout = c(na_kalman(otter$Trout[1:20]), na_kalman(otter$Trout[21:40]), na_kalman(otter$Trout[41:60]), na_kalman(otter$Trout[61:80]), na_kalman(otter$Trout[81:100]))
+##use imp_Altitude and imp_Trout instead of Altitude and Trout for the rest of analysis!!!
+```
+
