@@ -8,6 +8,7 @@ output: pdf_document
 ```{r warning=FALSE, message=FALSE}
 otter = read.csv("otter2.csv", header = TRUE)
 library(imputeTS)
+library(ggplot2)
 #impute the missing values for Altitude and store the values after imputation in a new variable called imp_Altitude
 otter$imp_Altitude = c(na_kalman(otter$Altitude[1:20]), na_kalman(otter$Altitude[21:40]), na_kalman(otter$Altitude[41:60]), na_kalman(otter$Altitude[61:80]), na_kalman(otter$Altitude[81:100]))
 #impute the missing values for Trout and store the values after imputation in a new variable called imp_Trout
