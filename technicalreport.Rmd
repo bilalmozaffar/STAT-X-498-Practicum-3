@@ -9,6 +9,7 @@ output: pdf_document
 library(imputeTS)
 library(ggplot2)
 library(PerformanceAnalytics)
+library(ggpubr)
 ```
 
 ```{r}
@@ -40,7 +41,43 @@ chart.Correlation(corr.dat, histogram = TRUE)
 # graph of each otter's activity over time
 ```
 
+```{r}
+# plot of altitude affecting activity over time for each otter type
+(alt.plot <- ggplot(otter, aes(x = imp_Altitude, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+  labs(title = 'Altitude and Activity by Otter Type', xlab = 'Altitude', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
 
+# plot of trout affecting activity over time for each otter type
+(trout.plot <- ggplot(otter, aes(x = imp_Trout, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+  labs(title = 'Trout and Activity by Otter Type', xlab = 'Trout', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of caloric affecting activity over time for each otter type
+(caloric.plot <- ggplot(otter, aes(x = Caloric, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+  labs(title = 'Caloric and Activity by Otter Type', xlab = 'Caloric', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of water excess affecting activity over time for each otter type
+(water.ex.plot <- ggplot(otter, aes(x = Water.Excess, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+  labs(title = 'Water Excess and Activity by Otter Type', xlab = 'Water Excess', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of amoeba affecting activity over time for each otter type
+(amoeba.plot <- ggplot(otter, aes(x = Amoeba, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+  labs(title = 'Amoeba and Activity by Otter Type', xlab = 'Amoeba', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of water affecting activity over time for each otter type
+(water.plot <- ggplot(otter, aes(x = Water, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+  labs(title = 'Water and Activity by Otter Type', xlab = 'Water', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+```
+
+```{r}
+# Possibly fix this line later to include all six plots together. For now, we can just use the chunk above.
+
+# ggarrange(plotlist = alt.plot, trout.plot, caloric.plot, water.ex.plot, amoeba.plot, water.plot)
+```
 
 
 
