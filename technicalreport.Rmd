@@ -29,11 +29,16 @@ otter$imp_Trout = c(na_kalman(otter$Trout[1:20]), na_kalman(otter$Trout[21:40]),
 *Include explanation of data processing methods and reasoning*
 
 ```{r}
+# correlation matrix for the numerical variables
 corr.dat <- otter[c('imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amoeba', 'Water')]
 chart.Correlation(corr.dat, histogram = TRUE)
 ```
 
 *Thomas can you add your code here for the plot that you made with each otter's activity over time?*
+
+```{r}
+# graph of each otter's activity over time
+```
 
 
 
