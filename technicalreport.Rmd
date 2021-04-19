@@ -79,7 +79,20 @@ chart.Correlation(corr.dat, histogram = TRUE)
 # ggarrange(plotlist = alt.plot, trout.plot, caloric.plot, water.ex.plot, amoeba.plot, water.plot)
 ```
 
+```{r}
+otters.amoeba = subset(otter, !is.na(Amoeba))
 
+otters.water = subset(otter, !is.na(Water))
+
+(amoeba.plot <- ggplot(otters.amoeba, aes(x = Amoeba, y = Activity)) + geom_line(mapping = aes(colour = Otter), stat = "summary_bin", binwidth = .1) +
+  labs(title = 'Amoeba and Activity by Otter Type', xlab = 'Amoeba', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of water affecting activity over time for each otter type
+(water.plot <- ggplot(otters.water, aes(x = Water, y = Activity)) + geom_line(mapping = aes(colour = Otter), stat = "summary_bin", binwidth = .8) +
+  labs(title = 'Water and Activity by Otter Type', xlab = 'Water', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+```
 
 
 
