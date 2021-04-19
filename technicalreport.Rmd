@@ -6,13 +6,47 @@ output: pdf_document
 ---
 
 ```{r warning=FALSE, message=FALSE}
-otter = read.csv("otter2.csv", header = TRUE)
 library(imputeTS)
 library(ggplot2)
-#impute the missing values for Altitude and store the values after imputation in a new variable called imp_Altitude
-otter$imp_Altitude = c(na_kalman(otter$Altitude[1:20]), na_kalman(otter$Altitude[21:40]), na_kalman(otter$Altitude[41:60]), na_kalman(otter$Altitude[61:80]), na_kalman(otter$Altitude[81:100]))
+library(PerformanceAnalytics)
+```
+
+```{r}
+otter = read.csv("otter2.csv", header = TRUE)
+
+# impute the missing values for Altitude and store the values after imputation in a new variable called imp_Altitude
+otter$imp_Altitude = c(na_kalman(otter$Altitude[1:20]), na_kalman(otter$Altitude[21:40]),
+                       na_kalman(otter$Altitude[41:60]), na_kalman(otter$Altitude[61:80]),
+                       na_kalman(otter$Altitude[81:100]))
+
 #impute the missing values for Trout and store the values after imputation in a new variable called imp_Trout
-otter$imp_Trout = c(na_kalman(otter$Trout[1:20]), na_kalman(otter$Trout[21:40]), na_kalman(otter$Trout[41:60]), na_kalman(otter$Trout[61:80]), na_kalman(otter$Trout[81:100]))
+otter$imp_Trout = c(na_kalman(otter$Trout[1:20]), na_kalman(otter$Trout[21:40]), na_kalman(otter$Trout[41:60]),
+                    na_kalman(otter$Trout[61:80]), na_kalman(otter$Trout[81:100]))
+
 ##use imp_Altitude and imp_Trout instead of Altitude and Trout for the rest of analysis!!!
 ```
+
+*Include explanation of data processing methods and reasoning*
+
+```{r}
+corr.dat <- otter[c('imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amoeba', 'Water')]
+chart.Correlation(corr.dat, histogram = TRUE)
+```
+
+*Thomas can you add your code here for the plot that you made with each otter's activity over time?*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
