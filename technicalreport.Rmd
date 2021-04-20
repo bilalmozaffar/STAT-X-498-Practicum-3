@@ -38,8 +38,13 @@ chart.Correlation(corr.dat, histogram = TRUE)
 *Thomas can you add your code here for the plot that you made with each otter's activity over time?*
 
 ```{r}
-# graph of each otter's activity over time
+ggplot(data =otter, aes(x = Month, y = Activity)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Activity Trends Over Time", caption = "Figure 1") + theme(plot.title = element_text(hjust = 0.5))
 ```
+
+Preliminary findings: RO-599 is the only otter that has an obviously non-stationary trend
+ - examined mean, variance, covariance
+ - we may consider detrending or differencing just this otter
+ 
 
 ```{r}
 # plot of altitude affecting activity over time for each otter type
@@ -94,7 +99,17 @@ otters.water = subset(otter, !is.na(Water))
   theme(plot.title = element_text(hjust = 0.5)))
 ```
 
+```{r}
+library(tseries)
 
+ro.599 = subset(otter, Otter == "RO-599")
+
+#ro.599 = ro.599[,c("Activity", "Month", "Caloric", "Water.Excess", "Amoeba", "Land", "imp_Altitude", "imp_Trout")]
+
+adf.test(diff(log(ro.599$Activity)), alternative = "stationary", k = 0)
+
+#ARMA is oly good for univariate data
+```
 
 
 
