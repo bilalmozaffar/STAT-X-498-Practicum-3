@@ -1,7 +1,7 @@
 ---
-title: "Practicum-3-group-2"
-author: "Nijia Ke, "
-date: "4/18/2021"
+title: "Aim 1 and 2"
+author: "Nijia Ke"
+date: "4/21/2021"
 output: pdf_document
 ---
 
@@ -160,13 +160,3 @@ var.918 = VAR(ro.918.ts.stnry,
 
 summary(var.918)
 ```
-
-
-
-
-
-
-
-
-
-
