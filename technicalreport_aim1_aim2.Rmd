@@ -205,11 +205,6 @@ summary(var.918)
 
 ```{r}
 library(nlme)
-m1.amb = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lAltitude:Otter + lTrout:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba)
-summary(m1.amb)
-```
-
-```{r}
 #model selections
 m1.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lAltitude:Otter + lTrout:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
 
@@ -272,10 +267,116 @@ AIC(update(m5.amb.ml, .~.-lAltitude))
 AIC(update(m5.amb.ml, .~.-Caloric))
 #AIC(update(m5.amb.ml, .~.-Month))
 AIC(update(m5.amb.ml, .~.-Amoeba:Otter))
-AIC(update(m5.amb.ml, .~.-Amoeba)) #The lowest AIC is reached, which is the same as in m5.amb.ml, keep m5.amb.ml as the final model for selection of fixed effects
+AIC(update(m5.amb.ml, .~.-Amoeba)) #The lowest AIC is reached, which is the same as in m5.amb.ml
 AIC(update(m5.amb.ml, .~.-Site)) 
+```
 
-summary(m5.amb.ml)
+
+```{r}
+m5.amb.reml = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba)
+#create a model using REML methods with intercept only
+
+m6.amb.reml = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1|Otter, otters.amoeba)
+lrtest(m5.amb.reml, m6.amb.reml)
+#p=0.988 
+
+#compare with the linear regression model without random effect
+m7.amb.reml = lm(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, otters.amoeba, method = "REML")
+lrtest(m6.amb.reml, m7.amb.reml)
+#p < 0.05, m6.amb.reml with intercept as the random effect will be our final model
+summary(m6.amb.reml) 
+```
+
+
+
+
+```{r}
+m1.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Water + Month + Site + lAltitude:Otter + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+
+AIC(m1.wt.ml)
+#AIC(update(m1.wt.ml, .~.-lTrout:Otter)) 
+AIC(update(m1.wt.ml, .~.-lAltitude:Otter)) #choose this model for the 1st step of model selection
+```
+
+```{r}
+#remove lAltitude:Otter
+m2.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Water + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+
+AIC(m2.wt.ml)
+#AIC(update(m2.wt.ml, .~.-lTrout:Otter))
+AIC(update(m2.wt.ml, .~.-lAltitude))
+AIC(update(m2.wt.ml, .~.-lTrout))
+AIC(update(m2.wt.ml, .~.-Caloric))
+AIC(update(m2.wt.ml, .~.-Water.Excess)) #choose this model for the 2nd step of model selection
+AIC(update(m2.wt.ml, .~.-Water))
+#AIC(update(m2.wt.ml, .~.-Month))
+#AIC(update(m2.wt.ml, .~.-Site)) 
+```
+
+
+```{r}
+#remove Water.Excess
+m3.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+
+AIC(m3.wt.ml)
+#AIC(update(m3.wt.ml, .~.-lTrout:Otter))
+AIC(update(m3.wt.ml, .~.-lAltitude))
+AIC(update(m3.wt.ml, .~.-lTrout))
+AIC(update(m3.wt.ml, .~.-Caloric)) #choose this model for the 3rd step of model selection
+AIC(update(m3.wt.ml, .~.-Water))
+#AIC(update(m3.wt.ml, .~.-Month))
+#AIC(update(m3.wt.ml, .~.-Site))
+```
+
+
+
+
+```{r}
+#remove Water.Excess
+m4.wt.ml = lme(lActivity ~ lAltitude + lTrout + Water + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+
+AIC(m4.wt.ml)
+#AIC(update(m4.wt.ml, .~.-lTrout:Otter))
+AIC(update(m4.wt.ml, .~.-lAltitude))
+AIC(update(m4.wt.ml, .~.-lT4rout))
+AIC(update(m4.wt.ml, .~.-Water)) #choose this model for the 4th step of model selection
+#AIC(update(m4.wt.ml, .~.-Month))
+#AIC(update(m4.wt.ml, .~.-Site))
+```
+
+
+
+
+```{r}
+#remove Water.Excess
+m5.wt.ml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+
+AIC(m5.wt.ml)
+#AIC(update(m5.wt.ml, .~.-lTrout:Otter))
+AIC(update(m5.wt.ml, .~.-lAltitude))
+AIC(update(m5.wt.ml, .~.-lTrout)) #AIC is the same as in m5.wt.ml, model selection of fixed effect is done
+#AIC(update(m5.wt.ml, .~.-Month))
+#AIC(update(m5.wt.ml, .~.-Site))
+
+summary(m5.wt.ml)
+```
+
+```{r}
+m5.wt.reml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "REML", otters.water)
+
+m6.wt.reml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1|Otter, method = "REML", otters.water)
+
+AIC(m5.wt.reml)
+AIC(m6.wt.reml) #choose m6.wt.reml over m5.wt
+
+m7.wt.reml = lm(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, otters.water, method = "REML")
+lrtest(m6.wt.reml, m7.wt.reml)
+#p < 0.05, m6.wt.reml is the final model
+```
+
+
+```{r}
+summary(m6.wt.reml)
 ```
 
 
@@ -285,9 +386,4 @@ summary(m5.amb.ml)
 ```
 
 
-
-```{r}
-m1.wt = lmer(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Water + Month + (1|Site), otters.water)
-summary(m1.wt)
-```
 
