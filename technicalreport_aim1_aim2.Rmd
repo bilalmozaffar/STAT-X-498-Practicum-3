@@ -32,10 +32,36 @@ corr.dat <- otter[c('imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amo
 chart.Correlation(corr.dat, histogram = TRUE)
 ```
 
+```{r}
+# correlation matrix for the numerical variables
+corr.dat2 <- otter[c('Activity', 'imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amoeba', 'Water')]
+chart.Correlation(corr.dat2, histogram = TRUE)
+```
+
+```{r}
+qqnorm(otter$Activity)
+qqline(otter$Activity) #right-skewed, use log transformation
+qqnorm(otter$imp_Altitude)
+qqline(otter$imp_Altitude) #right-skewed, use log transformation
+qqnorm(otter$imp_Trout)
+qqline(otter$imp_Trout) #right-skewed, use log transformation
+qqnorm(otter$Caloric)
+qqline(otter$Caloric)
+qqnorm(otter$Water.Excess)
+qqline(otter$Water.Excess) #water excess follows a normal distribution
+qqnorm(otter$Amoeba)
+qqline(otter$Amoeba)
+qqnorm(otter$Water)
+qqline(otter$Water)
+```
+
+
+
 *Thomas can you add your code here for the plot that you made with each otter's activity over time?*
 
 ```{r}
 ggplot(data =otter, aes(x = Month, y = Activity)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Activity Trends Over Time", caption = "Figure 1") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data =otter, aes(x = Month, y = log(Activity))) + geom_line(mapping = aes(colour = Otter)) + labs(title = "log of Activity Trends Over Time", caption = "Figure 2") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Preliminary findings: RO-599 is the only otter that has an obviously non-stationary trend
@@ -43,34 +69,44 @@ Preliminary findings: RO-599 is the only otter that has an obviously non-station
  - we may consider detrending or differencing just this otter
  
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 # plot of altitude affecting activity over time for each otter type
-(alt.plot <- ggplot(otter, aes(x = imp_Altitude, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+(alt.plot <- ggplot(otter, aes(x = imp_Altitude, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Altitude and Activity by Otter Type', xlab = 'Altitude', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
+# plot of altitude affecting activity over time for each otter type after transformations
+(alt.plot <- ggplot(otter, aes(x = log(imp_Altitude), y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Altitude and Activity by Otter Type', xlab = 'logarithm of Altitude', ylab = 'logarithm of Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
 # plot of trout affecting activity over time for each otter type
-(trout.plot <- ggplot(otter, aes(x = imp_Trout, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+(trout.plot <- ggplot(otter, aes(x = imp_Trout, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Trout and Activity by Otter Type', xlab = 'Trout', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
+# plot of trout affecting activity over time for each otter type after transformations
+(trout.plot <- ggplot(otter, aes(x = log(imp_Trout), y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Trout and Activity by Otter Type', xlab = 'logarithm of Trout', ylab = 'logarithm of Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
 # plot of caloric affecting activity over time for each otter type
-(caloric.plot <- ggplot(otter, aes(x = Caloric, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+(caloric.plot <- ggplot(otter, aes(x = Caloric, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Caloric and Activity by Otter Type', xlab = 'Caloric', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
 # plot of water excess affecting activity over time for each otter type
-(water.ex.plot <- ggplot(otter, aes(x = Water.Excess, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+(water.ex.plot <- ggplot(otter, aes(x = Water.Excess, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Water Excess and Activity by Otter Type', xlab = 'Water Excess', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
 # plot of amoeba affecting activity over time for each otter type
-(amoeba.plot <- ggplot(otter, aes(x = Amoeba, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+(amoeba.plot <- ggplot(otter, aes(x = Amoeba, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Amoeba and Activity by Otter Type', xlab = 'Amoeba', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
 # plot of water affecting activity over time for each otter type
-(water.plot <- ggplot(otter, aes(x = Water, y = Activity)) + geom_line(mapping = aes(colour = Otter)) +
+(water.plot <- ggplot(otter, aes(x = Water, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Water and Activity by Otter Type', xlab = 'Water', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 ```
@@ -78,7 +114,7 @@ Preliminary findings: RO-599 is the only otter that has an obviously non-station
 ```{r}
 # Possibly fix this line later to include all six plots together. For now, we can just use the chunk above.
 
-# ggarrange(plotlist = alt.plot, trout.plot, caloric.plot, water.ex.plot, amoeba.plot, water.plot)
+#ggarrange(plotlist = alt.plot, trout.plot, caloric.plot, water.ex.plot, amoeba.plot, water.plot)
 ```
 
 ```{r}
@@ -86,12 +122,12 @@ otters.amoeba = subset(otter, !is.na(Amoeba))
 
 otters.water = subset(otter, !is.na(Water))
 
-(amoeba.plot <- ggplot(otters.amoeba, aes(x = Amoeba, y = Activity)) + geom_line(mapping = aes(colour = Otter), stat = "summary_bin", binwidth = .1) +
+(amoeba.plot <- ggplot(otters.amoeba, aes(x = Amoeba, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Amoeba and Activity by Otter Type', xlab = 'Amoeba', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
 # plot of water affecting activity over time for each otter type
-(water.plot <- ggplot(otters.water, aes(x = Water, y = Activity)) + geom_line(mapping = aes(colour = Otter), stat = "summary_bin", binwidth = .8) +
+(water.plot <- ggplot(otters.water, aes(x = Water, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Water and Activity by Otter Type', xlab = 'Water', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 ```
@@ -160,3 +196,11 @@ var.918 = VAR(ro.918.ts.stnry,
 
 summary(var.918)
 ```
+
+
+```{r}
+library(lme4)
+
+```
+
+
