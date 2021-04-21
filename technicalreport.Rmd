@@ -101,14 +101,67 @@ otters.water = subset(otter, !is.na(Water))
 
 ```{r}
 library(tseries)
+library(MTS)
+library(vars)
+```
 
+```{r}
+otter = subset(otter, select = -c(Altitude, Trout, Lat., Long.))
+```
+
+```{r}
 ro.599 = subset(otter, Otter == "RO-599")
+ro.599 = subset(ro.599, select = -c(Otter, Site, Month, Month.1, Year, Water))
+ro.918 = subset(otter, Otter == "RO-918")
+ro.918 = subset(ro.918, select = -c(Otter, Site, Month, Month.1, Year))
+ro.859 = subset(otter, Otter == "RO-859")
+ro.859 = subset(ro.859, select = -c(Otter, Site, Month, Month.1, Year, Water))
+ro.106 = subset(otter, Otter == "RO-106")
+ro.106 = subset(ro.106, select = -c(Otter, Site, Month, Month.1, Year, Amoeba))
+ro.255 = subset(otter, Otter == "RO-255")
+ro.255 = subset(ro.255, select = -c(Otter, Site, Month, Month.1, Year, Amoeba))
 
-#ro.599 = ro.599[,c("Activity", "Month", "Caloric", "Water.Excess", "Amoeba", "Land", "imp_Altitude", "imp_Trout")]
+ro.599.ts = ts(ro.599,
+               frequency = 12,
+               start = c(2018, 7))
 
-adf.test(diff(log(ro.599$Activity)), alternative = "stationary", k = 0)
+ro.918.ts = ts(ro.918,
+               frequency = 12,
+               start = c(2018, 7))
 
-#ARMA is oly good for univariate data
+ro.859.ts = ts(ro.859,
+               frequency = 12,
+               start = c(2018, 7))
+
+ro.106.ts = ts(ro.106,
+               frequency = 12,
+               start = c(2018, 7))
+
+ro.255.ts = ts(ro.255,
+               frequency = 12,
+               start = c(2018, 7))
+```
+
+```{r}
+apply(ro.918.ts, 2, adf.test)
+```
+
+```{r}
+ro.918.ts.stnry = diffM(ro.918.ts)
+
+apply(ro.918.ts.stnry, 2, adf.test)
+```
+
+```{r}
+plot.ts(ro.918.ts.stnry)
+```
+
+```{r}
+var.918 = VAR(ro.918.ts.stnry,
+              ic = "AIC",
+              type = "none")
+
+summary(var.918)
 ```
 
 
