@@ -34,7 +34,7 @@ chart.Correlation(corr.dat, histogram = TRUE)
 
 ```{r}
 # correlation matrix for the numerical variables
-corr.dat2 <- otter[c('Activity', 'imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amoeba', 'Water')]
+corr.dat2 <- otter[c('Activity', 'imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amoeba', 'Water', 'Month')]
 chart.Correlation(corr.dat2, histogram = TRUE)
 ```
 
@@ -61,7 +61,8 @@ qqline(otter$Water)
 
 ```{r}
 ggplot(data =otter, aes(x = Month, y = Activity)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Activity Trends Over Time", caption = "Figure 1") + theme(plot.title = element_text(hjust = 0.5))
-ggplot(data =otter, aes(x = Month, y = log(Activity))) + geom_line(mapping = aes(colour = Otter)) + labs(title = "log of Activity Trends Over Time", caption = "Figure 2") + theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(data =otter, aes(x = Month, y = log(Activity))) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Logarithm of Activity Trends Over Time", caption = "Figure 2") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Preliminary findings: RO-599 is the only otter that has an obviously non-stationary trend
@@ -118,6 +119,10 @@ Preliminary findings: RO-599 is the only otter that has an obviously non-station
 ```
 
 ```{r}
+otter$lActivity = log(otter$Activity)
+otter$lAltitude = log(otter$imp_Altitude)
+otter$lTrout = log(otter$imp_Trout)
+
 otters.amoeba = subset(otter, !is.na(Amoeba))
 
 otters.water = subset(otter, !is.na(Water))
@@ -199,8 +204,90 @@ summary(var.918)
 
 
 ```{r}
-library(lme4)
+library(nlme)
+m1.amb = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lAltitude:Otter + lTrout:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba)
+summary(m1.amb)
+```
+
+```{r}
+#model selections
+m1.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lAltitude:Otter + lTrout:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m1.amb.ml)
+AIC(update(m1.amb.ml, .~.-Amoeba:Otter))
+AIC(update(m1.amb.ml, .~.-lTrout:Otter)) #choose this model for the 1st step
+AIC(update(m1.amb.ml, .~.-lAltitude:Otter))
 
 ```
 
+```{r}
+
+# create a ML model without lTrout:Otter
+m2.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lAltitude:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m2.amb.ml)
+AIC(update(m2.amb.ml, .~.-Amoeba:Otter))
+AIC(update(m2.amb.ml, .~.-lAltitude:Otter)) #choose this model for the 2nd step 
+```
+
+```{r}
+
+# create a ML model without lAltitude:Otter
+m3.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m3.amb.ml)
+AIC(update(m3.amb.ml, .~.-Amoeba:Otter)) #a high AIC, keep the Amoeba:Otter and its corresponding main effects
+
+#In addition, check whether we should remove other main effects
+
+AIC(update(m3.amb.ml, .~.-lAltitude))
+AIC(update(m3.amb.ml, .~.-lTrout)) #choose this model for the 3rd step
+AIC(update(m3.amb.ml, .~.-Caloric)) 
+AIC(update(m3.amb.ml, .~.-Water.Excess))
+AIC(update(m3.amb.ml, .~.-Month))
+AIC(update(m3.amb.ml, .~.-Site))
+```
+
+```{r}
+# create a ML model without lTrout
+m4.amb.ml = lme(lActivity ~ lAltitude + Caloric + Water.Excess + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m4.amb.ml)
+AIC(update(m4.amb.ml, .~.-lAltitude))
+AIC(update(m4.amb.ml, .~.-Caloric)) 
+AIC(update(m4.amb.ml, .~.-Water.Excess)) #choose this model for the 4th step
+#AIC(update(m4.amb.ml, .~.-Month))
+AIC(update(m4.amb.ml, .~.-Amoeba:Otter))
+AIC(update(m4.amb.ml, .~.-Amoeba))
+#AIC(update(m4.amb.ml, .~.-Site)) 
+```
+
+
+```{r}
+# create a ML model without Water.Excess
+m5.amb.ml = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m5.amb.ml)
+AIC(update(m5.amb.ml, .~.-lAltitude))
+AIC(update(m5.amb.ml, .~.-Caloric))
+#AIC(update(m5.amb.ml, .~.-Month))
+AIC(update(m5.amb.ml, .~.-Amoeba:Otter))
+AIC(update(m5.amb.ml, .~.-Amoeba)) #The lowest AIC is reached, which is the same as in m5.amb.ml, keep m5.amb.ml as the final model for selection of fixed effects
+AIC(update(m5.amb.ml, .~.-Site)) 
+
+summary(m5.amb.ml)
+```
+
+
+
+```{r}
+
+```
+
+
+
+```{r}
+m1.wt = lmer(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Water + Month + (1|Site), otters.water)
+summary(m1.wt)
+```
 
