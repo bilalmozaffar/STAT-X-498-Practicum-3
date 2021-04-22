@@ -28,13 +28,13 @@ otter$imp_Trout = c(na_kalman(otter$Trout[1:20]), na_kalman(otter$Trout[21:40]),
 
 ```{r}
 # correlation matrix for the numerical variables
-corr.dat <- otter[c('imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amoeba', 'Water')]
+corr.dat <- otter[c('imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amoeba', 'Water', 'Land')]
 chart.Correlation(corr.dat, histogram = TRUE)
 ```
 
 ```{r}
 # correlation matrix for the numerical variables
-corr.dat2 <- otter[c('Activity', 'imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amoeba', 'Water', 'Month')]
+corr.dat2 <- otter[c('Activity', 'imp_Altitude', 'imp_Trout', 'Caloric', 'Water.Excess', 'Amoeba', 'Water', 'Land', 'Month')]
 chart.Correlation(corr.dat2, histogram = TRUE)
 ```
 
@@ -53,6 +53,8 @@ qqnorm(otter$Amoeba)
 qqline(otter$Amoeba)
 qqnorm(otter$Water)
 qqline(otter$Water)
+qqnorm(otter$Land)
+qqline(otter$Land) #right-skewed, use log transformation
 ```
 
 
@@ -71,44 +73,74 @@ Preliminary findings: RO-599 is the only otter that has an obviously non-station
  
 
 ```{r warning=FALSE, message=FALSE}
-# plot of altitude affecting activity over time for each otter type
+# plot of altitude affecting activity for each otter type
 (alt.plot <- ggplot(otter, aes(x = imp_Altitude, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Altitude and Activity by Otter Type', xlab = 'Altitude', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
-# plot of altitude affecting activity over time for each otter type after transformations
+# plot of altitude affecting activity for each otter type after transformations
 (alt.plot <- ggplot(otter, aes(x = log(imp_Altitude), y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Altitude and Activity by Otter Type', xlab = 'logarithm of Altitude', ylab = 'logarithm of Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
-# plot of trout affecting activity over time for each otter type
+# plot of trout affecting activity for each otter type
 (trout.plot <- ggplot(otter, aes(x = imp_Trout, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Trout and Activity by Otter Type', xlab = 'Trout', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
-# plot of trout affecting activity over time for each otter type after transformations
+# plot of trout affecting activity for each otter type after transformations
 (trout.plot <- ggplot(otter, aes(x = log(imp_Trout), y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Trout and Activity by Otter Type', xlab = 'logarithm of Trout', ylab = 'logarithm of Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
-# plot of caloric affecting activity over time for each otter type
+# plot of caloric affecting activity for each otter type
 (caloric.plot <- ggplot(otter, aes(x = Caloric, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Caloric and Activity by Otter Type', xlab = 'Caloric', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
-# plot of water excess affecting activity over time for each otter type
+# plot of caloric affecting activity for each otter type after tranformation
+(caloric.plot <- ggplot(otter, aes(x = Caloric, y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Caloric and Activity by Otter Type', xlab = 'Caloric', ylab = 'Logarithm of Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of water excess affecting activity for each otter type 
 (water.ex.plot <- ggplot(otter, aes(x = Water.Excess, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Water Excess and Activity by Otter Type', xlab = 'Water Excess', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
-# plot of amoeba affecting activity over time for each otter type
+# plot of water excess affecting activity for each otter type after transformation
+(water.ex.plot <- ggplot(otter, aes(x = Water.Excess, y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Water Excess and Activity by Otter Type', xlab = 'Water Excess', ylab = 'Logarithm of Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of amoeba affecting activity for each otter type after tranformation
 (amoeba.plot <- ggplot(otter, aes(x = Amoeba, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Amoeba and Activity by Otter Type', xlab = 'Amoeba', ylab = 'Activity') +
   theme(plot.title = element_text(hjust = 0.5)))
 
-# plot of water affecting activity over time for each otter type
+# plot of amoeba affecting activity for each otter type after tranformation
+(amoeba.plot <- ggplot(otter, aes(x = Amoeba, y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Amoeba and Activity by Otter Type', xlab = 'Amoeba', ylab = 'Logarithm of Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of water affecting activity for each otter type
 (water.plot <- ggplot(otter, aes(x = Water, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
   labs(title = 'Water and Activity by Otter Type', xlab = 'Water', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of water affecting activity for each otter type after tranformation
+(water.plot <- ggplot(otter, aes(x = Water, y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Water and Activity by Otter Type', xlab = 'Water', ylab = 'Logrithm of Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of Land affecting activity for each otter type
+(alt.plot <- ggplot(otter, aes(x = Land, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Land and Activity by Otter Type', xlab = 'Altitude', ylab = 'Activity') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of Land affecting activity for each otter type after transformations
+(alt.plot <- ggplot(otter, aes(x = log(Land+0.1), y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Land and Activity by Otter Type after tranformation', xlab = 'logarithm of Altitude', ylab = 'logarithm of Land') +
   theme(plot.title = element_text(hjust = 0.5)))
 ```
 
@@ -119,22 +151,15 @@ Preliminary findings: RO-599 is the only otter that has an obviously non-station
 ```
 
 ```{r}
+#make transformation of varibles
 otter$lActivity = log(otter$Activity)
 otter$lAltitude = log(otter$imp_Altitude)
 otter$lTrout = log(otter$imp_Trout)
+otter$lLand = log(otter$Land + 0.1)
 
 otters.amoeba = subset(otter, !is.na(Amoeba))
 
 otters.water = subset(otter, !is.na(Water))
-
-(amoeba.plot <- ggplot(otters.amoeba, aes(x = Amoeba, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
-  labs(title = 'Amoeba and Activity by Otter Type', xlab = 'Amoeba', ylab = 'Activity') +
-  theme(plot.title = element_text(hjust = 0.5)))
-
-# plot of water affecting activity over time for each otter type
-(water.plot <- ggplot(otters.water, aes(x = Water, y = Activity)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
-  labs(title = 'Water and Activity by Otter Type', xlab = 'Water', ylab = 'Activity') +
-  theme(plot.title = element_text(hjust = 0.5)))
 ```
 
 ```{r}
@@ -206,7 +231,7 @@ summary(var.918)
 ```{r}
 library(nlme)
 #model selections
-m1.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lAltitude:Otter + lTrout:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+m1.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lLand + lAltitude:Otter + lTrout:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
 
 AIC(m1.amb.ml)
 AIC(update(m1.amb.ml, .~.-Amoeba:Otter))
@@ -218,7 +243,7 @@ AIC(update(m1.amb.ml, .~.-lAltitude:Otter))
 ```{r}
 
 # create a ML model without lTrout:Otter
-m2.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lAltitude:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+m2.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lLand + lAltitude:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
 
 AIC(m2.amb.ml)
 AIC(update(m2.amb.ml, .~.-Amoeba:Otter))
@@ -228,7 +253,7 @@ AIC(update(m2.amb.ml, .~.-lAltitude:Otter)) #choose this model for the 2nd step
 ```{r}
 
 # create a ML model without lAltitude:Otter
-m3.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+m3.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lLand + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
 
 AIC(m3.amb.ml)
 AIC(update(m3.amb.ml, .~.-Amoeba:Otter)) #a high AIC, keep the Amoeba:Otter and its corresponding main effects
@@ -236,62 +261,95 @@ AIC(update(m3.amb.ml, .~.-Amoeba:Otter)) #a high AIC, keep the Amoeba:Otter and 
 #In addition, check whether we should remove other main effects
 
 AIC(update(m3.amb.ml, .~.-lAltitude))
-AIC(update(m3.amb.ml, .~.-lTrout)) #choose this model for the 3rd step
+AIC(update(m3.amb.ml, .~.-lTrout)) 
 AIC(update(m3.amb.ml, .~.-Caloric)) 
 AIC(update(m3.amb.ml, .~.-Water.Excess))
 AIC(update(m3.amb.ml, .~.-Month))
 AIC(update(m3.amb.ml, .~.-Site))
+AIC(update(m3.amb.ml, .~.-lLand)) #choose this model for the 3rd step
+```
+
+
+
+
+```{r}
+# create a ML model without lLand
+m4.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m4.amb.ml)
+AIC(update(m4.amb.ml, .~.-lAltitude))
+AIC(update(m4.amb.ml, .~.-lTrout)) #choose this model for the 4th step
+AIC(update(m4.amb.ml, .~.-Caloric)) 
+AIC(update(m4.amb.ml, .~.-Water.Excess)) 
+AIC(update(m4.amb.ml, .~.-Month))
+AIC(update(m4.amb.ml, .~.-Amoeba:Otter))
+AIC(update(m4.amb.ml, .~.-Amoeba))
+AIC(update(m4.amb.ml, .~.-Site))
 ```
 
 ```{r}
 # create a ML model without lTrout
-m4.amb.ml = lme(lActivity ~ lAltitude + Caloric + Water.Excess + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+m5.amb.ml = lme(lActivity ~ lAltitude + Caloric + Water.Excess + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
 
-AIC(m4.amb.ml)
-AIC(update(m4.amb.ml, .~.-lAltitude))
-AIC(update(m4.amb.ml, .~.-Caloric)) 
-AIC(update(m4.amb.ml, .~.-Water.Excess)) #choose this model for the 4th step
-#AIC(update(m4.amb.ml, .~.-Month))
-AIC(update(m4.amb.ml, .~.-Amoeba:Otter))
-AIC(update(m4.amb.ml, .~.-Amoeba))
-#AIC(update(m4.amb.ml, .~.-Site)) 
+AIC(m5.amb.ml)
+AIC(update(m5.amb.ml, .~.-lAltitude))
+AIC(update(m5.amb.ml, .~.-Caloric)) 
+AIC(update(m5.amb.ml, .~.-Water.Excess)) #choose this model for the 5th step
+#AIC(update(m5.amb.ml, .~.-Month))
+AIC(update(m5.amb.ml, .~.-Amoeba:Otter))
+AIC(update(m5.amb.ml, .~.-Amoeba))
+#AIC(update(m5.amb.ml, .~.-Site)) 
 ```
 
 
 ```{r}
 # create a ML model without Water.Excess
-m5.amb.ml = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+m6.amb.ml = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
 
-AIC(m5.amb.ml)
-AIC(update(m5.amb.ml, .~.-lAltitude))
-AIC(update(m5.amb.ml, .~.-Caloric))
-#AIC(update(m5.amb.ml, .~.-Month))
-AIC(update(m5.amb.ml, .~.-Amoeba:Otter))
-AIC(update(m5.amb.ml, .~.-Amoeba)) #The lowest AIC is reached, which is the same as in m5.amb.ml
-AIC(update(m5.amb.ml, .~.-Site)) 
+AIC(m6.amb.ml)
+AIC(update(m6.amb.ml, .~.-lAltitude))
+AIC(update(m6.amb.ml, .~.-Caloric))
+#AIC(update(m6.amb.ml, .~.-Month))
+AIC(update(m6.amb.ml, .~.-Amoeba:Otter))
+AIC(update(m6.amb.ml, .~.-Amoeba)) #The lowest AIC is reached, which is the same as in m5.amb.ml
+AIC(update(m6.amb.ml, .~.-Site))
 ```
 
 
 ```{r}
-m5.amb.reml = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba)
+m6.amb.reml = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba)
 #create a model using REML methods with intercept only
 
-m6.amb.reml = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1|Otter, otters.amoeba)
-lrtest(m5.amb.reml, m6.amb.reml)
-#p=0.988 
-
-#compare with the linear regression model without random effect
-m7.amb.reml = lm(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, otters.amoeba, method = "REML")
+m7.amb.reml = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1|Otter, otters.amoeba)
 lrtest(m6.amb.reml, m7.amb.reml)
-#p < 0.05, m6.amb.reml with intercept as the random effect will be our final model
-summary(m6.amb.reml) 
+#p=0.988, choose m7.amb.reml
+```
+
+```{r}
+#compare with the linear regression model without random effect
+m8.amb = lm(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, otters.amoeba)
+lrt.1 = as.numeric(2*(logLik(m7.amb.reml) - logLik(m8.amb, REML = TRUE)))
+# Since the fixed effects
+#in both models are the same, we should use REML for both models to reduce bias
+set.seed(2)
+replic = 1000
+lrstat = numeric(replic)
+for(i in 1:replic){
+rlActivity = unlist(simulate(m7.amb)) #generate a sample of simulated responses using the null model
+#refit both models:
+m8r= lm(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, otters.amoeba) 
+m7r = lme(lActivity ~ lAltitude + Caloric + Amoeba + Month + Site + Amoeba:Otter, random = ~1|Otter, otters.amoeba)
+lrstat[i] = 2*(logLik(m7r) - logLik(m8r, REML = TRUE))
+}
+mean(lrstat > lrt.1) #calculate the p-value = 0, random effect needs to be included
+summary(m7.amb.reml) 
 ```
 
 
 
 
 ```{r}
-m1.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Water + Month + Site + lAltitude:Otter + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+m1.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Water + Month + Site + lLand + lAltitude:Otter + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
 
 AIC(m1.wt.ml)
 #AIC(update(m1.wt.ml, .~.-lTrout:Otter)) 
@@ -300,89 +358,215 @@ AIC(update(m1.wt.ml, .~.-lAltitude:Otter)) #choose this model for the 1st step o
 
 ```{r}
 #remove lAltitude:Otter
-m2.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Water + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+m2.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Water + Month + Site + lLand + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
 
 AIC(m2.wt.ml)
 #AIC(update(m2.wt.ml, .~.-lTrout:Otter))
 AIC(update(m2.wt.ml, .~.-lAltitude))
-AIC(update(m2.wt.ml, .~.-lTrout))
+#AIC(update(m2.wt.ml, .~.-lTrout))
 AIC(update(m2.wt.ml, .~.-Caloric))
 AIC(update(m2.wt.ml, .~.-Water.Excess)) #choose this model for the 2nd step of model selection
 AIC(update(m2.wt.ml, .~.-Water))
 #AIC(update(m2.wt.ml, .~.-Month))
 #AIC(update(m2.wt.ml, .~.-Site)) 
+AIC(update(m2.wt.ml, .~.-Land))
 ```
 
 
 ```{r}
 #remove Water.Excess
-m3.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+m3.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water + Month + Site + lLand + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
 
 AIC(m3.wt.ml)
 #AIC(update(m3.wt.ml, .~.-lTrout:Otter))
 AIC(update(m3.wt.ml, .~.-lAltitude))
 AIC(update(m3.wt.ml, .~.-lTrout))
-AIC(update(m3.wt.ml, .~.-Caloric)) #choose this model for the 3rd step of model selection
+AIC(update(m3.wt.ml, .~.-Caloric)) 
 AIC(update(m3.wt.ml, .~.-Water))
 #AIC(update(m3.wt.ml, .~.-Month))
 #AIC(update(m3.wt.ml, .~.-Site))
+AIC(update(m3.wt.ml, .~.-lLand)) #choose this model for the 3rd step of model selection
 ```
 
-
-
-
 ```{r}
-#remove Water.Excess
-m4.wt.ml = lme(lActivity ~ lAltitude + lTrout + Water + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+#remove lLand
+m4.wt.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
 
 AIC(m4.wt.ml)
 #AIC(update(m4.wt.ml, .~.-lTrout:Otter))
 AIC(update(m4.wt.ml, .~.-lAltitude))
-AIC(update(m4.wt.ml, .~.-lT4rout))
-AIC(update(m4.wt.ml, .~.-Water)) #choose this model for the 4th step of model selection
+AIC(update(m4.wt.ml, .~.-lTrout))
+AIC(update(m4.wt.ml, .~.-Caloric)) #choose this model for the 4th step of model selection
+AIC(update(m4.wt.ml, .~.-Water))
 #AIC(update(m4.wt.ml, .~.-Month))
 #AIC(update(m4.wt.ml, .~.-Site))
 ```
 
 
 
-
 ```{r}
 #remove Water.Excess
-m5.wt.ml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+m5.wt.ml = lme(lActivity ~ lAltitude + lTrout + Water + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
 
 AIC(m5.wt.ml)
 #AIC(update(m5.wt.ml, .~.-lTrout:Otter))
 AIC(update(m5.wt.ml, .~.-lAltitude))
-AIC(update(m5.wt.ml, .~.-lTrout)) #AIC is the same as in m5.wt.ml, model selection of fixed effect is done
+AIC(update(m5.wt.ml, .~.-lTrout))
+AIC(update(m5.wt.ml, .~.-Water)) #choose this model for the 5th step of model selection
 #AIC(update(m5.wt.ml, .~.-Month))
 #AIC(update(m5.wt.ml, .~.-Site))
-
-summary(m5.wt.ml)
-```
-
-```{r}
-m5.wt.reml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "REML", otters.water)
-
-m6.wt.reml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1|Otter, method = "REML", otters.water)
-
-AIC(m5.wt.reml)
-AIC(m6.wt.reml) #choose m6.wt.reml over m5.wt
-
-m7.wt.reml = lm(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, otters.water, method = "REML")
-lrtest(m6.wt.reml, m7.wt.reml)
-#p < 0.05, m6.wt.reml is the final model
-```
-
-
-```{r}
-summary(m6.wt.reml)
 ```
 
 
 
-```{r}
 
+```{r}
+#remove Water.Excess
+m6.wt.ml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1+Month|Otter, method = "ML", otters.water)
+
+AIC(m6.wt.ml)
+#AIC(update(m6.wt.ml, .~.-lTrout:Otter))
+AIC(update(m6.wt.ml, .~.-lAltitude))
+AIC(update(m6.wt.ml, .~.-lTrout)) #AIC is the same as in m6.wt.ml, model selection of fixed effect is done
+#AIC(update(m6.wt.ml, .~.-Month))
+#AIC(update(m6.wt.ml, .~.-Site))
+
+```
+
+```{r}
+m6.wt.reml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1+Month|Otter, otters.water)
+
+m7.wt.reml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1|Otter, otters.water)
+
+AIC(m6.wt.reml)
+AIC(m7.wt.reml) #choose m7.wt.reml over m6.wt
+```
+
+
+```{r}
+m8.wt = lm(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, otters.water)
+lrt.1 = as.numeric(2*(logLik(m7.wt.reml) - logLik(m8.wt, REML = TRUE)))
+# Since the fixed effects
+#in both models are the same, we should use REML for both models to reduce bias
+set.seed(2)
+replic = 1000
+lrstat = numeric(replic)
+for(i in 1:replic){
+rlActivity = unlist(simulate(m7.wt)) #generate a sample of simulated responses using the null model
+#refit both models:
+m8r= lm(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, otters.water) 
+m7r = lme(rlActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1|Otter, otters.water)
+lrstat[i] = 2*(logLik(m7r) - logLik(m8r, REML = TRUE))
+}
+mean(lrstat > lrt.1) #calculate the p-value = 0.515 > 0.05, random effect doesn't need to be included
+```
+
+
+```{r}
+summary(m8.wt)
+```
+
+
+
+```{r}
+#build a model without including Amoeba and Water
+m1.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Month + Site + lLand + lAltitude:Otter + lTrout:Otter, random = ~1+Month|Otter, otter, method = "ML")
+
+BIC(m1.ml)
+#BIC(update(m1.ml, .~.-lTrout:Otter)) 
+BIC(update(m1.ml, .~.-lAltitude:Otter)) #choose this model for the 1st step
+```
+
+
+```{r}
+#build a model without lAltitude:Otter 
+m1.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Month + Site + lLand + lTrout:Otter, random = ~1+Month|Otter, otter, method = "ML")
+
+BIC(m1.ml)
+#BIC(update(m1.ml, .~.-lTrout:Otter)) 
+BIC(update(m1.ml, .~.-lAltitude))
+BIC(update(m1.ml, .~.-lTrout))
+BIC(update(m1.ml, .~.-Caloric))
+BIC(update(m1.ml, .~.-Water.Excess)) 
+#BIC(update(m1.ml, .~.-Month))
+#BIC(update(m1.ml, .~.-Site))
+BIC(update(m1.ml, .~.-lLand)) #1st step of choice
+```
+
+```{r}
+#build a model without lAltitude:Otter 
+m2.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Month + Site + lTrout:Otter, random = ~1+Month|Otter, otter, method = "ML")
+
+BIC(m2.ml)
+#BIC(update(m2.ml, .~.-lTrout:Otter)) 
+BIC(update(m2.ml, .~.-lAltitude))
+BIC(update(m2.ml, .~.-lTrout))
+BIC(update(m2.ml, .~.-Caloric)) 
+BIC(update(m2.ml, .~.-Water.Excess)) #2nd step of choice
+#BIC(update(m2.ml, .~.-Month))
+#BIC(update(m2.ml, .~.-Site))
+
+```
+
+
+```{r}
+#build a model without lAltitude:Otter 
+m3.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Month + Site + lTrout:Otter, random = ~1+Month|Otter, otter, method = "ML")
+
+BIC(m3.ml)
+#BIC(update(m3.ml, .~.-lTrout:Otter)) 
+BIC(update(m3.ml, .~.-lAltitude))
+BIC(update(m3.ml, .~.-lTrout))
+BIC(update(m3.ml, .~.-Caloric)) #3rd step of choice
+#BIC(update(m3.ml, .~.-Month))
+#BIC(update(m3.ml, .~.-Site))
+
+```
+
+
+```{r}
+m4.ml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1+Month|Otter, otter, method = "ML")
+
+BIC(m4.ml)
+#BIC(update(m4.ml, .~.-lTrout:Otter)) 
+BIC(update(m4.ml, .~.-lAltitude))
+BIC(update(m4.ml, .~.-lTrout)) #model selection of fixed effects if done, BIC is the same as in m4.ml
+#BIC(update(m4.ml, .~.-Month))
+#BIC(update(m4.ml, .~.-Site))
+```
+
+
+```{r}
+m4.reml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1+Month|Otter, otter)
+
+m5.reml = lme(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1|Otter, otter)
+
+lrtest(m4.reml, m5.reml) #pvalue =1, choose m5.reml
+```
+
+
+```{r}
+#build a linear regression model without random effects for comparison
+m6 = lm(lActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, otter)
+lrt.1 = as.numeric(2*(logLik(m5.reml) - logLik(m6, REML = TRUE)))
+# Since the fixed effects
+#in both models are the same, we should use REML for both models to reduce bias
+set.seed(2)
+replic = 1000
+lrstat = numeric(replic)
+for(i in 1:replic){
+rlActivity = unlist(simulate(m6)) #generate a sample of simulated responses using the null model
+#refit both models:
+m6r= lm(rlActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, otter) 
+m5r = lme(rlActivity ~ lAltitude + lTrout + Month + Site + lTrout:Otter, random = ~1|Otter, otter)
+lrstat[i] = 2*(logLik(m5r) - logLik(m6r, REML = TRUE))
+}
+mean(lrstat > lrt.1) #calculate the p-value = 0.304 > 0.05, random effect doesn't need to be included
+```
+
+
+```{r}
+summary(m6)
 ```
 
 
