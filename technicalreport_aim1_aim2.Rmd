@@ -230,7 +230,7 @@ summary(var.918)
 
 ```{r}
 library(nlme)
-#model selections
+#model selections for otters that has access to amoeba
 m1.amb.ml = lme(lActivity ~ lAltitude + lTrout + Caloric + Water.Excess + Amoeba + Month + Site + lLand + lAltitude:Otter + lTrout:Otter + Amoeba:Otter, random = ~1+Month|Otter, otters.amoeba, method = "ML")
 
 AIC(m1.amb.ml)
@@ -568,6 +568,377 @@ mean(lrstat > lrt.1) #calculate the p-value = 0.304 > 0.05, random effect doesn'
 ```{r}
 summary(m6)
 ```
+
+### specific aim 2
+
+```{r warning=FALSE, message=FALSE}
+#line plots
+ggplot(data =otter, aes(x = Month, y = Caloric)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Caloric Trends Over Time", caption = "Figure 1") + theme(plot.title = element_text(hjust = 0.5))
+
+#scatterplot with trend lines
+ggplot(data =otter, aes(x = Month, y = Caloric)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) + labs(title = "Caloric Trends Over Time", caption = "Figure 1") + theme(plot.title = element_text(hjust = 0.5))
+
+# plot of Water affecting Caloric for each otter type
+(alt.plot <- ggplot(otter, aes(x = Water, y = Caloric)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Water and Activity by Otter Type', xlab = 'Water', ylab = 'Caloric') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of Land affecting Caloric for each otter type
+(alt.plot <- ggplot(otter, aes(x = Land, y = Caloric)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Land and Activity by Otter Type', xlab = 'Land', ylab = 'Caloric') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+# plot of Land affecting Caloric for each otter type after transformations
+(alt.plot <- ggplot(otter, aes(x = log(Land+0.1), y = Caloric)) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
+  labs(title = 'Land and Caloric by Otter Type after tranformation', xlab = 'Logrithm of Land', ylab = 'Caloric') +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+qqnorm(otter$lLand)
+qqline(otter$lLand)
+```
+
+
+
+```{r}
+m1c.amb.ml = lme(Caloric ~ lActivity + lAltitude + lTrout + Water.Excess + Amoeba + Month + Site + lLand, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m1c.amb.ml)
+AIC(update(m1c.amb.ml, .~.-lActivity))
+AIC(update(m1c.amb.ml, .~.-lAltitude))
+AIC(update(m1c.amb.ml, .~.-lTrout)) #choose this model for the 1st step
+AIC(update(m1c.amb.ml, .~.-Water.Excess)) 
+#AIC(update(m1c.amb.ml, .~.-Amoeba))
+#AIC(update(m1c.amb.ml, .~.-Month))
+AIC(update(m1c.amb.ml, .~.-Site)) 
+#AIC(update(m1c.amb.ml, .~.-lLand)) 
+
+```
+
+
+
+
+```{r}
+m2c.amb.ml = lme(Caloric ~ lActivity + lAltitude + Water.Excess + Amoeba + Month + Site + lLand, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m2c.amb.ml)
+AIC(update(m2c.amb.ml, .~.-lActivity))
+AIC(update(m2c.amb.ml, .~.-lAltitude))
+AIC(update(m2c.amb.ml, .~.-Water.Excess)) #choose this model for the 2nd step
+#AIC(update(m2c.amb.ml, .~.-Amoeba))
+#AIC(update(m2c.amb.ml, .~.-Month))
+AIC(update(m2c.amb.ml, .~.-Site)) 
+AIC(update(m2c.amb.ml, .~.-lLand)) 
+
+```
+
+
+
+```{r}
+m3c.amb.ml = lme(Caloric ~ lActivity + lAltitude + Amoeba + Month + Site + lLand, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m3c.amb.ml)
+AIC(update(m3c.amb.ml, .~.-lActivity))
+AIC(update(m3c.amb.ml, .~.-lAltitude)) #choose this model for the 3rd step
+#AIC(update(m3c.amb.ml, .~.-Amoeba))
+#AIC(update(m3c.amb.ml, .~.-Month))
+AIC(update(m3c.amb.ml, .~.-Site)) 
+AIC(update(m3c.amb.ml, .~.-lLand)) 
+
+```
+
+
+
+```{r}
+m4c.amb.ml = lme(Caloric ~ lActivity + Amoeba + Month + Site + lLand, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m4c.amb.ml)
+AIC(update(m4c.amb.ml, .~.-lActivity))
+AIC(update(m4c.amb.ml, .~.-Amoeba)) #choose this model for the 4th step
+#AIC(update(m4c.amb.ml, .~.-Month))
+AIC(update(m4c.amb.ml, .~.-Site)) 
+AIC(update(m4c.amb.ml, .~.-lLand)) 
+
+```
+
+
+```{r}
+m5c.amb.ml = lme(Caloric ~ lActivity + Month + Site + lLand, random = ~1+Month|Otter, otters.amoeba, method = "ML")
+
+AIC(m5c.amb.ml) #the full model has the smallest AIC, which is the chosen model considering fixed effects
+AIC(update(m5c.amb.ml, .~.-lActivity))
+#AIC(update(m5c.amb.ml, .~.-Month))
+AIC(update(m5c.amb.ml, .~.-Site)) 
+AIC(update(m5c.amb.ml, .~.-lLand)) 
+```
+
+
+```{r}
+m5c.amb.reml = lme(Caloric ~ lActivity + Month + Site + lLand, random = ~1+Month|Otter, otters.amoeba) #use REML for comparison of random effects
+m6c.amb.reml = lme(Caloric ~ lActivity + Month + Site + lLand, random = ~1|Otter, otters.amoeba) #build a model without random slope
+lrtest(m5c.amb.reml, m6c.amb.reml) #pvalue = 0.986, choose the reduced model m6c.amb.reml
+```
+
+
+
+```{r}
+m7c.amb = lm(Caloric ~ lActivity + Month + Site + lLand, otters.amoeba)
+lrt.1 = as.numeric(2*(logLik(m6c.amb.reml) - logLik(m7c.amb, REML = TRUE)))
+# Since the fixed effects
+#in both models are the same, we should use REML for both models to reduce bias
+set.seed(2)
+replic = 1000
+lrstat = numeric(replic)
+for(i in 1:replic){
+rCaloric = unlist(simulate(m7c.amb)) #generate a sample of simulated responses using the null model
+#refit both models:
+m7cr = lm(rCaloric ~ lActivity + Month + Site + lLand, otters.amoeba) 
+m6cr = lme(rCaloric ~ lActivity + Month + Site + lLand, random = ~1|Otter, otters.amoeba)
+lrstat[i] = 2*(logLik(m6cr) - logLik(m7cr, REML = TRUE))
+}
+mean(lrstat > lrt.1) #calculate the p-value = 0.159 > 0.05, random effect doesn't need to be included
+```
+
+
+```{r}
+summary(m7c.amb)
+```
+
+
+
+
+```{r}
+m1c.wt.ml = lme(Caloric ~ lActivity + lAltitude + lTrout + Water.Excess + Water + Month + Site + lLand, random = ~1+Month|Otter, otters.water, method = "ML")
+
+AIC(m1c.wt.ml)
+AIC(update(m1c.wt.ml, .~.-lActivity))
+AIC(update(m1c.wt.ml, .~.-lAltitude))
+AIC(update(m1c.wt.ml, .~.-lTrout)) 
+AIC(update(m1c.wt.ml, .~.-Water.Excess))
+AIC(update(m1c.wt.ml, .~.-Water)) 
+AIC(update(m1c.wt.ml, .~.-Month))
+AIC(update(m1c.wt.ml, .~.-Site)) #choose this model for the 1st step
+AIC(update(m1c.wt.ml, .~.-lLand)) 
+
+```
+
+
+```{r}
+m2c.wt.ml = lme(Caloric ~ lActivity + lAltitude + lTrout + Water.Excess + Water + Month + lLand, random = ~1+Month|Otter, otters.water, method = "ML")
+
+AIC(m2c.wt.ml)
+AIC(update(m2c.wt.ml, .~.-lActivity))
+AIC(update(m2c.wt.ml, .~.-lAltitude))
+AIC(update(m2c.wt.ml, .~.-lTrout)) 
+AIC(update(m2c.wt.ml, .~.-Water.Excess))
+#AIC(update(m2c.wt.ml, .~.-Water)) 
+AIC(update(m2c.wt.ml, .~.-Month)) 
+AIC(update(m2c.wt.ml, .~.-lLand)) #choose this model for the 2nd step
+
+```
+
+
+```{r}
+m3c.wt.ml = lme(Caloric ~ lActivity + lAltitude + lTrout + Water.Excess + Water + Month, random = ~1+Month|Otter, otters.water, method = "ML")
+
+AIC(m3c.wt.ml)
+AIC(update(m3c.wt.ml, .~.-lActivity)) #choose this model for the 3rd step
+AIC(update(m3c.wt.ml, .~.-lAltitude))
+AIC(update(m3c.wt.ml, .~.-lTrout)) 
+AIC(update(m3c.wt.ml, .~.-Water.Excess))
+AIC(update(m3c.wt.ml, .~.-Water)) 
+AIC(update(m3c.wt.ml, .~.-Month)) 
+
+```
+
+
+
+```{r}
+m4c.wt.ml = lme(Caloric ~ lAltitude + lTrout + Water.Excess + Water + Month, random = ~1+Month|Otter, otters.water, method = "ML")
+
+AIC(m4c.wt.ml)
+AIC(update(m4c.wt.ml, .~.-lAltitude)) #choose this model for the 4th step
+AIC(update(m4c.wt.ml, .~.-lTrout)) 
+AIC(update(m4c.wt.ml, .~.-Water.Excess))
+AIC(update(m4c.wt.ml, .~.-Water)) 
+AIC(update(m4c.wt.ml, .~.-Month)) 
+
+```
+
+```{r}
+m5c.wt.ml = lme(Caloric ~ lTrout + Water.Excess + Water + Month, random = ~1+Month|Otter, otters.water, method = "ML")
+
+AIC(m5c.wt.ml)
+AIC(update(m5c.wt.ml, .~.-lTrout)) 
+AIC(update(m5c.wt.ml, .~.-Water.Excess))
+AIC(update(m5c.wt.ml, .~.-Water)) 
+AIC(update(m5c.wt.ml, .~.-Month)) #choose this model for the 5th step
+
+```
+
+
+```{r}
+m6c.wt.ml = lme(Caloric ~ lTrout + Water.Excess + Water, random = ~1+Month|Otter, otters.water, method = "ML")
+
+AIC(m6c.wt.ml)
+AIC(update(m6c.wt.ml, .~.-lTrout)) #choose this model for the 6th step 
+AIC(update(m6c.wt.ml, .~.-Water.Excess))
+AIC(update(m6c.wt.ml, .~.-Water)) 
+
+```
+
+
+
+
+```{r}
+m7c.wt.ml = lme(Caloric ~ Water.Excess + Water, random = ~1+Month|Otter, otters.water, method = "ML")
+
+AIC(m7c.wt.ml) #the full model has the smallest AIC, model selection in terms of fixed effects is done
+AIC(update(m7c.wt.ml, .~.-Water.Excess))
+AIC(update(m7c.wt.ml, .~.-Water)) 
+
+```
+
+
+
+```{r}
+#compare models with or without random slope of Month
+m7c.wt.reml = lme(Caloric ~ Water.Excess + Water, random = ~1+Month|Otter, otters.water)
+m8c.wt.reml = lme(Caloric ~ Water.Excess + Water, random = ~1|Otter, otters.water)
+lrtest(m7c.wt.reml, m8c.wt.reml) #pvalue = 1, choose m8c.wt.reml
+```
+
+
+```{r}
+m9c.wt = lm(Caloric ~ Water.Excess + Water, otters.water)
+lrt.1 = as.numeric(2*(logLik(m8c.wt.reml) - logLik(m9c.wt, REML = TRUE)))
+# Since the fixed effects
+#in both models are the same, we should use REML for both models to reduce bias
+set.seed(2)
+replic = 1000
+lrstat = numeric(replic)
+for(i in 1:replic){
+rCaloric = unlist(simulate(m9c.wt)) #generate a sample of simulated responses using the null model
+#refit both models:
+m9cr = lm(rCaloric ~ Water.Excess + Water, otters.water) 
+m8cr = lme(rCaloric ~ Water.Excess + Water, random = ~1|Otter, otters.water)
+lrstat[i] = 2*(logLik(m8cr) - logLik(m9cr, REML = TRUE))
+}
+mean(lrstat > lrt.1) #calculate the p-value = 0.134 > 0.05, random effect doesn't need to be included
+```
+
+
+```{r}
+summary(m9c.wt)
+```
+
+
+
+```{r}
+m1c.ml = lme(Caloric ~ lActivity + lAltitude + lTrout + Water.Excess + Month + Site + lLand, random = ~1+Month|Otter, otter, method = "ML")
+
+AIC(m1c.ml)
+AIC(update(m1c.ml, .~.-lActivity))
+AIC(update(m1c.ml, .~.-lAltitude))
+AIC(update(m1c.ml, .~.-lTrout)) 
+AIC(update(m1c.ml, .~.-Water.Excess)) 
+AIC(update(m1c.ml, .~.-Month))
+AIC(update(m1c.ml, .~.-Site)) #choose this model for the 1st step
+AIC(update(m1c.ml, .~.-lLand)) 
+```
+
+
+```{r}
+m2c.ml = lme(Caloric ~ lActivity + lAltitude + lTrout + Water.Excess + Month + lLand, random = ~1+Month|Otter, otter, method = "ML")
+
+AIC(m2c.ml)
+AIC(update(m2c.ml, .~.-lActivity)) #choose this model for the 2nd step
+AIC(update(m2c.ml, .~.-lAltitude))
+AIC(update(m2c.ml, .~.-lTrout)) 
+AIC(update(m2c.ml, .~.-Water.Excess)) 
+AIC(update(m2c.ml, .~.-Month))
+AIC(update(m2c.ml, .~.-lLand)) 
+```
+
+
+```{r}
+m3c.ml = lme(Caloric ~ lAltitude + lTrout + Water.Excess + Month + lLand, random = ~1+Month|Otter, otter, method = "ML")
+
+AIC(m3c.ml)
+AIC(update(m3c.ml, .~.-lAltitude))
+AIC(update(m3c.ml, .~.-lTrout)) 
+AIC(update(m3c.ml, .~.-Water.Excess)) 
+AIC(update(m3c.ml, .~.-Month))  #choose this model for the 3rd step
+AIC(update(m3c.ml, .~.-lLand)) 
+```
+
+
+
+```{r}
+m4c.ml = lme(Caloric ~ lAltitude + lTrout + Water.Excess + lLand, random = ~1+Month|Otter, otter, method = "ML")
+
+AIC(m4c.ml)
+AIC(update(m4c.ml, .~.-lAltitude))
+AIC(update(m4c.ml, .~.-lTrout)) #choose this model for the 4th step 
+AIC(update(m4c.ml, .~.-Water.Excess))  
+AIC(update(m4c.ml, .~.-lLand)) 
+```
+
+
+
+```{r}
+m5c.ml = lme(Caloric ~ lAltitude + Water.Excess + lLand, random = ~1+Month|Otter, otter, method = "ML")
+
+AIC(m5c.ml)
+AIC(update(m5c.ml, .~.-lAltitude))
+AIC(update(m5c.ml, .~.-Water.Excess)) #choose this model for the 5th step  
+AIC(update(m5c.ml, .~.-lLand)) 
+```
+
+
+
+```{r}
+m6c.ml = lme(Caloric ~ lAltitude + lLand, random = ~1+Month|Otter, otter, method = "ML")
+
+AIC(m6c.ml) #model selected before considering random effects
+AIC(update(m6c.ml, .~.-lAltitude))
+AIC(update(m6c.ml, .~.-lLand)) 
+```
+
+
+
+```{r}
+m6c.reml = lme(Caloric ~ lAltitude + lLand, random = ~1+Month|Otter, otter)
+m7c.reml = lme(Caloric ~ lAltitude + lLand, random = ~1|Otter, otter)
+lrtest(m6c.reml, m7c.reml) #pvalue = 1, choose m7c.reml
+```
+
+
+```{r}
+m8c = lm(Caloric ~ lAltitude + lLand, otter)
+lrt.1 = as.numeric(2*(logLik(m7c.reml) - logLik(m8c, REML = TRUE)))
+# Since the fixed effects
+#in both models are the same, we should use REML for both models to reduce bias
+set.seed(2)
+replic = 1000
+lrstat = numeric(replic)
+for(i in 1:replic){
+rCaloric = unlist(simulate(m8c)) #generate a sample of simulated responses using the null model
+#refit both models:
+m8cr = lm(rCaloric ~ lAltitude + lLand, otter)
+m7cr = lme(rCaloric ~ lAltitude + lLand, random = ~1|Otter, otter)
+lrstat[i] = 2*(logLik(m7cr) - logLik(m8cr, REML = TRUE))
+}
+mean(lrstat > lrt.1) #calculate the p-value = 0.797 > 0.05, random effect doesn't need to be included
+```
+
+
+```{r}
+summary(m8c)
+```
+
+
+
+
 
 
 
