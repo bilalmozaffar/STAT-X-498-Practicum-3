@@ -199,6 +199,69 @@ var.918 = VAR(ro.918.ts.stnry,
 summary(var.918)
 ```
 
+```{r}
+library(TSA)
+acf(otter$lActivity[1:20])
+pacf(otter$lActivity[1:20])
+acf(otter$lActivity[21:40])
+pacf(otter$lActivity[21:40])
+acf(otter$lActivity[41:60])
+pacf(otter$lActivity[41:60])
+acf(otter$lActivity[61:80])
+pacf(otter$lActivity[61:80])
+acf(otter$lActivity[81:100])
+pacf(otter$lActivity[81:100])
+```
+
+
+```{r warning=FALSE, message=FALSE}
+#otter 1 ~ AR(1)
+arimax.model1 <- arima(otter$lActivity[1:20], order=c(1,0,0), include.mean=TRUE, method="CSS")
+arimax.model1
+
+acf(arimax.model1$residuals)
+pacf(arimax.model1$residuals)
+```
+
+```{r}
+#otter 2 ~ MA(1)
+arimax.model2 <- arima(otter$lActivity[21:40], order=c(0,0,1), include.mean=TRUE, method="CSS")
+arimax.model2
+
+acf(arimax.model2$residuals)
+pacf(arimax.model2$residuals)
+```
+
+
+```{r}
+#otter 3 ~ MA(1)
+arimax.model3 <- arima(otter$lActivity[41:60], order=c(0,0,1), include.mean=TRUE, method="CSS")
+arimax.model3
+
+acf(arimax.model3$residuals)
+pacf(arimax.model3$residuals)
+```
+
+
+```{r}
+#otter 4 ~ AR(1)
+arimax.model4 <- arima(otter$lActivity[61:80], order=c(1,0,0), include.mean=TRUE, method="CSS")
+arimax.model4
+
+acf(arimax.model4$residuals)
+pacf(arimax.model4$residuals)
+```
+
+```{r}
+#otter 5 ~ MA(1)
+arimax.model5 <- arima(otter$lActivity[81:100], order=c(0,0,1), include.mean=TRUE, method="CSS")
+arimax.model5
+
+acf(arimax.model5$residuals)
+pacf(arimax.model5$residuals)
+```
+
+
 
 ```{r}
 library(nlme)
