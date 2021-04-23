@@ -63,10 +63,10 @@ qqline(otter$Land) #right-skewed, potentially use log transformation
 *Thomas can you add your code here for the plot that you made with each otter's activity over time?*
 
 ```{r}
-ggplot(data =otter, aes(x = Month, y = Activity)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Activity Trends Over Time", caption = "Figure 1") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data =otter, aes(x = Month, y = Activity)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Activity Trends Over Time") + theme(plot.title = element_text(hjust = 0.5))
 
 #after log transformation of Activity
-ggplot(data =otter, aes(x = Month, y = log(Activity))) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Logarithm of Activity Trends Over Time", caption = "Figure 2") + theme(plot.title = element_text(hjust = 0.5))
+ggplot(data =otter, aes(x = Month, y = log(Activity))) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Logarithm of Activity Trends Over Time") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 Preliminary findings: RO-599 is the only otter that has an obviously non-stationary trend
@@ -188,7 +188,7 @@ apply(ro.918.ts.stnry, 2, adf.test)
 ```
 
 ```{r}
-plot.ts(ro.918.ts.stnry)
+#plot.ts(ro.918.ts.stnry)
 ```
 
 ```{r}
@@ -196,7 +196,7 @@ var.918 = VAR(ro.918.ts.stnry,
               ic = "AIC",
               type = "none")
 
-summary(var.918)
+#summary(var.918)
 ```
 
 ```{r}
