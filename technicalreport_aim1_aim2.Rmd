@@ -12,6 +12,14 @@ library(PerformanceAnalytics)
 library(ggpubr)
 ```
 
+### Examing missing values
+
+```{r message=FALSE, warning=FALSE}
+p1 <- ggplot(data =otter, aes(x = Month, y = Altitude)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Altitude Trends Over Time before imputation") + theme(plot.title = element_text(hjust = 0.5))
+p2 <- ggplot(data =otter, aes(x = Month, y = Trout)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Trout Trends Over Time before imputation") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+
 ```{r warning=FALSE, message=FALSE}
 otter = read.csv("otter2.csv", header = TRUE)
 
@@ -22,6 +30,11 @@ otter$imp_Altitude = c(na_kalman(otter$Altitude[1:20]), na_kalman(otter$Altitude
 otter$imp_Trout = c(na_kalman(otter$Trout[1:20]), na_kalman(otter$Trout[21:40]), na_kalman(otter$Trout[41:60]), na_kalman(otter$Trout[61:80]), na_kalman(otter$Trout[81:100]))
 
 ##use imp_Altitude and imp_Trout instead of Altitude and Trout for the rest of analysis!!!
+
+p3 <- ggplot(data =otter, aes(x = Month, y = imp_Altitude)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Altitude Trends Over Time after imputation") + theme(plot.title = element_text(hjust = 0.5))
+p4 <- ggplot(data =otter, aes(x = Month, y = imp_Trout)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Trout Trends Over Time after imputation") + theme(plot.title = element_text(hjust = 0.5))
+
+ggarrange(p1, p2, p3, p4)
 ```
 
 *Include explanation of data processing methods and reasoning*
