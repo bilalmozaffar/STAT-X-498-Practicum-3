@@ -521,10 +521,11 @@ mean(lrstat > lrt.1) #calculate the p-value = 0.515 > 0.05, random effect doesn'
 
 
 ```{r}
-summary(m8.wt)
-qqnorm(residuals(m8.wt))
-qqline(residuals(m8.wt))
-plot(m8.wt, which = 1)
+#still use mixed effects model, since it considers the correlations among the repeated variables
+summary(m7.wt.reml)
+qqnorm(residuals(m7.wt.reml))
+qqline(residuals(m7.wt.reml))
+plot(m7.wt.reml, which = 1)
 ```
 
 
@@ -627,10 +628,11 @@ mean(lrstat > lrt.1) #calculate the p-value = 0.304 > 0.05, random effect doesn'
 
 
 ```{r}
-summary(m6)
-qqnorm(residuals(m6))
-qqline(residuals(m6))
-plot(m6, which = 1)
+#still use mixed effects model, since it considers the correlations among the repeated variables
+summary(m5.reml)
+qqnorm(residuals(m5.reml))
+qqline(residuals(m5.reml))
+plot(m5.reml, which = 1)
 ```
 
 ### specific aim 2
@@ -838,7 +840,7 @@ AIC(update(m3c.wt.ml, .~.-Month)) #choose this model for the 3rd step
 m4c.wt.ml = lme(Caloric ~ lAltitude + Water.Excess + Water + Site + Land, random = ~1+Month|Otter, otters.water, method = "ML")
 
 AIC(m4c.wt.ml)
-AIC(update(m4c.wt.ml, .~.-lAltitude))  step
+AIC(update(m4c.wt.ml, .~.-lAltitude))  
 AIC(update(m4c.wt.ml, .~.-Site)) 
 AIC(update(m4c.wt.ml, .~.-Water.Excess))
 AIC(update(m4c.wt.ml, .~.-Water)) #choose this model for the 4th step
