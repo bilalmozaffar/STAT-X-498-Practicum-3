@@ -161,6 +161,130 @@ var.918 = VAR(ro.918.ts.stnry,
 summary(var.918)
 ```
 
+```{r}
+# RO-599 impulse response to altitude and trout
+ro.599.ts.irf <- as.data.frame(ro.599.ts)
+myvars.599 <- c('Activity', 'imp_Altitude', 'imp_Trout')
+ro.599.ts.irf <- ro.599.ts.irf[myvars.599]
+
+ro.599.ts.irf = ts(ro.599.ts.irf,
+               frequency = 12,
+               start = c(2018, 7))
+
+ro.599.ts.irf <- diff(log(ro.599.ts.irf))
+# plot(ro.599.ts.irf)
+
+irf.mod.599 <- VAR(ro.599.ts.irf, p = 1, type = 'const')
+
+feir.599.1 <- irf(irf.mod.599, impulse = 'imp_Altitude', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+feir.599.2 <- irf(irf.mod.599, impulse = 'imp_Trout', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+plot(feir.599.1)
+plot(feir.599.2)
+```
+
+```{r}
+# RO-106 impulse response to altitude and trout
+ro.106.ts.irf <- as.data.frame(ro.106.ts)
+myvars.106 <- c('Activity', 'imp_Altitude', 'imp_Trout')
+ro.106.ts.irf <- ro.106.ts.irf[myvars.106]
+
+ro.106.ts.irf = ts(ro.106.ts.irf,
+               frequency = 12,
+               start = c(2018, 7))
+
+ro.106.ts.irf <- diff(log(ro.106.ts.irf))
+# plot(ro.106.ts.irf)
+
+irf.mod.106 <- VAR(ro.106.ts.irf, p = 1, type = 'const')
+
+feir.106.1 <- irf(irf.mod.106, impulse = 'imp_Altitude', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+feir.106.2 <- irf(irf.mod.106, impulse = 'imp_Trout', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+plot(feir.106.1)
+plot(feir.106.2)
+```
+
+```{r}
+# RO-255 impulse response to altitude and trout
+ro.255.ts.irf <- as.data.frame(ro.255.ts)
+myvars.255 <- c('Activity', 'imp_Altitude', 'imp_Trout')
+ro.255.ts.irf <- ro.255.ts.irf[myvars.255]
+
+ro.255.ts.irf = ts(ro.255.ts.irf,
+               frequency = 12,
+               start = c(2018, 7))
+
+ro.255.ts.irf <- diff(log(ro.255.ts.irf))
+# plot(ro.255.ts.irf)
+
+irf.mod.255 <- VAR(ro.255.ts.irf, p = 1, type = 'const')
+
+feir.255.1 <- irf(irf.mod.255, impulse = 'imp_Altitude', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+feir.255.2 <- irf(irf.mod.255, impulse = 'imp_Trout', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+plot(feir.255.1)
+plot(feir.255.2)
+```
+
+```{r}
+# RO-918 impulse response to altitude and trout
+ro.918.ts.irf <- as.data.frame(ro.918.ts)
+myvars.918 <- c('Activity', 'imp_Altitude', 'imp_Trout')
+ro.918.ts.irf <- ro.918.ts.irf[myvars.918]
+
+ro.918.ts.irf = ts(ro.918.ts.irf,
+               frequency = 12,
+               start = c(2018, 7))
+
+ro.918.ts.irf <- diff(log(ro.918.ts.irf))
+# plot(ro.918.ts.irf)
+
+irf.mod.918 <- VAR(ro.918.ts.irf, p = 1, type = 'const')
+
+feir.918.1 <- irf(irf.mod.918, impulse = 'imp_Altitude', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+feir.918.2 <- irf(irf.mod.918, impulse = 'imp_Trout', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+plot(feir.918.1)
+plot(feir.918.2)
+```
+
+```{r}
+# RO-859 impulse response to altitude and trout
+ro.859.ts.irf <- as.data.frame(ro.859.ts)
+myvars.859 <- c('Activity', 'imp_Altitude', 'imp_Trout')
+ro.859.ts.irf <- ro.859.ts.irf[myvars.859]
+
+ro.859.ts.irf = ts(ro.859.ts.irf,
+               frequency = 12,
+               start = c(2018, 7))
+
+ro.859.ts.irf <- diff(log(ro.859.ts.irf))
+# plot(ro.859.ts.irf)
+
+irf.mod.859 <- VAR(ro.859.ts.irf, p = 1, type = 'const')
+
+feir.859.1 <- irf(irf.mod.859, impulse = 'imp_Altitude', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+feir.859.2 <- irf(irf.mod.859, impulse = 'imp_Trout', response = 'Activity',
+             n.ahead = 10, ortho = FALSE, runs = 1000)
+
+plot(feir.859.1)
+plot(feir.859.2)
+```
 
 
 
