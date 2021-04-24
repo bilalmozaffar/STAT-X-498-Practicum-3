@@ -2,11 +2,13 @@
 title: "graphs"
 author: "Arthur Janes"
 date: "4/22/2021"
-output: word_document
+output:
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r warning=FALSE, message=FALSE}
@@ -19,13 +21,14 @@ library(ggpubr)
 
 
 ```{r message=FALSE, warning=FALSE}
+otter = read.csv("otter2.csv", header = TRUE)
 #examing missing patterns
-p1 <- ggplot(data =otter, aes(x = Month, y = Altitude)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Altitude Trends Over Time before imputation") + theme(plot.title = element_text(hjust = 0.5))
-p2 <- ggplot(data =otter, aes(x = Month, y = Trout)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Trout Trends Over Time before imputation") + theme(plot.title = element_text(hjust = 0.5))
+p1 <- ggplot(data =otter, aes(x = Month, y = Altitude)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "      Altitude Over Time before imputation") + theme(plot.title = element_text(hjust = 0.5))
+p2 <- ggplot(data =otter, aes(x = Month, y = Trout)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Trout Over Time before imputation") + theme(plot.title = element_text(hjust = 0.5))
 ```
 
 ```{r warning=FALSE, message=FALSE}
-otter = read.csv("otter2.csv", header = TRUE)
+
 
 # impute the missing values for Altitude and store the values after imputation in a new variable called imp_Altitude
 otter$imp_Altitude = c(na_kalman(otter$Altitude[1:20]), na_kalman(otter$Altitude[21:40]), na_kalman(otter$Altitude[41:60]), na_kalman(otter$Altitude[61:80]), na_kalman(otter$Altitude[81:100]))
@@ -37,8 +40,8 @@ otter$imp_Trout = c(na_kalman(otter$Trout[1:20]), na_kalman(otter$Trout[21:40]),
 ```
 
 ```{r}
-p3 <- ggplot(data =otter, aes(x = Month, y = imp_Altitude)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Altitude Trends Over Time after imputation") + theme(plot.title = element_text(hjust = 0.5))
-p4 <- ggplot(data =otter, aes(x = Month, y = imp_Trout)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Trout Trends Over Time after imputation") + theme(plot.title = element_text(hjust = 0.5))
+p3 <- ggplot(data =otter, aes(x = Month, y = imp_Altitude)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "  Altitude Over Time after imputation") + theme(plot.title = element_text(hjust = 0.5))
+p4 <- ggplot(data =otter, aes(x = Month, y = imp_Trout)) + geom_point(mapping = aes(colour = Otter)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Trout Over Time after imputation") + theme(plot.title = element_text(hjust = 0.5))
 
 ggarrange(p1, p2, p3, p4)
 ```
@@ -52,10 +55,10 @@ chart.Correlation(corr.dat2, histogram = TRUE)
 ```
 
 ```{r}
-plot2 <- ggplot(data =otter, aes(x = Month, y = Activity)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Activity Trends Over Time", caption = "Figure 2") + theme(plot.title = element_text(hjust = 0.5))
+plot2 <- ggplot(data =otter, aes(x = Month, y = Activity)) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Activity Trends Over Time") + theme(plot.title = element_text(hjust = 0.5))
 
 #after log transformation of Activity
-plot3 <- ggplot(data =otter, aes(x = Month, y = log(Activity))) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Logarithm of Activity Trends Over Time", caption = "Figure 3") + theme(plot.title = element_text(hjust = 0.5)) + ylab("logarithm of Activity")
+plot3 <- ggplot(data =otter, aes(x = Month, y = log(Activity))) + geom_line(mapping = aes(colour = Otter)) + labs(title = "Logarithm of Activity Trends Over Time") + theme(plot.title = element_text(hjust = 0.5)) + ylab("logarithm of Activity")
 
 figure2 <- ggarrange(plot2, plot3)
 
@@ -68,39 +71,39 @@ figure2
 
 # plot of altitude affecting activity for each otter type after transformations
 alt.plot <- ggplot(otter, aes(x = log(imp_Altitude), y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
-  labs(title = 'Altitude and Activity by Otter Type', xlab = 'logarithm of Altitude', ylab = 'logarithm of Activity', caption = "Figure 4") +
+  labs(title = '      Altitude and Activity by Otter Type', xlab = 'logarithm of Altitude', ylab = 'logarithm of Activity') +
   theme(plot.title = element_text(hjust = 0.5)) + ylab('logarithm of Activity') + xlab('logarithm of Altitude')
 
 # plot of trout affecting activity for each otter type after transformations
 trout.plot <- ggplot(otter, aes(x = log(imp_Trout), y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
-  labs(title = 'Trout and Activity by Otter Type', xlab = 'logarithm of Trout', ylab = 'logarithm of Activity', caption = "Figure 5") +
+  labs(title = 'Trout and Activity by Otter Type', xlab = 'logarithm of Trout', ylab = 'logarithm of Activity') +
   theme(plot.title = element_text(hjust = 0.5)) + ylab('logarithm of Activity') + xlab('logarithm of Trout')
 
 # plot of amoeba affecting activity for each otter type after tranformation
 amoeba.plot <- ggplot(otter, aes(x = Amoeba, y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
-  labs(title = 'Amoeba and Activity by Otter Type', xlab = 'Amoeba', ylab = 'Logarithm of Activity', caption = "Figure 6") +
+  labs(title = '       Amoeba and Activity by Otter Type', xlab = 'Amoeba', ylab = 'Logarithm of Activity') +
   theme(plot.title = element_text(hjust = 0.5))+ ylab('logarithm of Activity') + xlab('Amoeba')
 
 ##The next four plots look like null plots, consistent with what we observed in the correlation matrix, we don't care about interactions
 
 # plot of caloric affecting activity for each otter type after tranformation
 caloric.plot <- ggplot(otter, aes(x = Caloric, y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
-  labs(title = 'Caloric and Activity by Otter Type', xlab = 'Caloric', ylab = 'Logarithm of Activity', caption = "Figure 7") +
+  labs(title = '    Caloric and Activity by Otter Type', xlab = 'Caloric', ylab = 'Logarithm of Activity') +
   theme(plot.title = element_text(hjust = 0.5))+ ylab('logarithm of Activity') + xlab('Caloric')
 
 # plot of water excess affecting activity for each otter type after transformation
 water.ex.plot <- ggplot(otter, aes(x = Water.Excess, y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
-  labs(title = 'Water Excess and Activity by Otter Type', xlab = 'Water Excess', ylab = 'Logarithm of Activity', caption = "Figure 8") +
+  labs(title = 'Water Excess and Activity by Otter Type', xlab = 'Water Excess', ylab = 'Logarithm of Activity') +
   theme(plot.title = element_text(hjust = 0.5))+ ylab('logarithm of Activity') + xlab('Water Excess')
 
 # plot of water affecting activity for each otter type after tranformation
 water.plot <- ggplot(otter, aes(x = Water, y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
-  labs(title = 'Water and Activity by Otter Type', xlab = 'Water', ylab = 'Logrithm of Activity', caption = "Figure 9") +
+  labs(title = '   Water and Activity by Otter Type', xlab = 'Water', ylab = 'Logrithm of Activity') +
   theme(plot.title = element_text(hjust = 0.5))+ ylab('logarithm of Activity') + xlab('Water')
 
 # plot of Land affecting activity for each otter type after transformations
 land.plot <- ggplot(otter, aes(x = log(Land+0.1), y = log(Activity))) + geom_point(mapping = aes(colour = Otter)) + geom_smooth(aes(colour = Otter), method = lm, se = FALSE) +
-  labs(title = 'Land and Activity by Otter Type after tranformation', xlab = 'logarithm of Altitude', ylab = 'logarithm of Land', caption = "Figure 10") +
+  labs(title = 'Land and Activity by Otter Type', xlab = 'logarithm of Altitude', ylab = 'logarithm of Land') +
   theme(plot.title = element_text(hjust = 0.5))+ ylab('logarithm of Activity') + xlab('logarithm of Land')
 
 figure3 <- ggarrange(alt.plot, trout.plot, amoeba.plot)
